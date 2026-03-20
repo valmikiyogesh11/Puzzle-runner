@@ -176,35 +176,41 @@ function resetGame() {
 function restartGame() {
   loadLevel();
 }
-
 /* SERVICE WORKER */
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js");
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("service-worker.js")
+      .then(() => console.log("SW Registered ✅"))
+      .catch(err => console.log("SW Error ❌", err));
+  });
 }
-let deferredPrompt;
-const installBtn = document.getElementById("installBtn");
 
-/* CAPTURE INSTALL EVENT */
+/* PWA INSTALL BUTTON */
+let deferredPrompt;
+
 window.addEventListener("beforeinstallprompt", (e) => {
+  console.log("Install available ✅");
+
   e.preventDefault();
   deferredPrompt = e;
 
-  installBtn.style.display = "block";
+  const btn = document.getElementById("installBtn");
+  if (btn) btn.style.display = "block";
 });
 
-/* BUTTON CLICK */
-installBtn.addEventListener("click", async () => {
-  installBtn.style.display = "none";
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("installBtn");
 
-  if (deferredPrompt) {
-    deferredPrompt.prompt();
+  if (btn) {
+    btn.addEventListener("click", async () => {
+      if (!deferredPrompt) return;
 
-    const choice = await deferredPrompt.userChoice;
+      deferredPrompt.prompt();
 
-    if (choice.outcome === "accepted") {
-      console.log("App Installed");
-    }
+      const choice = await deferredPrompt.userChoice;
+      console.log("User choice:", choice.outcome);
 
-    deferredPrompt = null;
+      deferredPrompt = null;
+    });
   }
 });
