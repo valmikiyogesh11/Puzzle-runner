@@ -181,3 +181,30 @@ function restartGame() {
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("service-worker.js");
 }
+let deferredPrompt;
+const installBtn = document.getElementById("installBtn");
+
+/* CAPTURE INSTALL EVENT */
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+
+  installBtn.style.display = "block";
+});
+
+/* BUTTON CLICK */
+installBtn.addEventListener("click", async () => {
+  installBtn.style.display = "none";
+
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+
+    const choice = await deferredPrompt.userChoice;
+
+    if (choice.outcome === "accepted") {
+      console.log("App Installed");
+    }
+
+    deferredPrompt = null;
+  }
+});
