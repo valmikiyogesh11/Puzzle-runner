@@ -24,3 +24,17 @@ button {
   border-radius: 8px;
   font-weight: bold;
 }
+footer {
+  color: #ccc;
+  font-size: 14px;
+}
+
+footer a {
+  color: #00ffcc;
+  text-decoration: none;
+  margin: 0 5px;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
